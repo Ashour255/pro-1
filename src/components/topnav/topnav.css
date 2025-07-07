@@ -1,0 +1,9 @@
+.top-nav {
+  background-color: white;
+  color: #131316;
+  text-align: center;
+  padding: 12px;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(18, 18, 18, 0.08);
+  margin-bottom: 0;
+}

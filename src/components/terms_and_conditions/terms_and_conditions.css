@@ -1,0 +1,31 @@
+.terms-and-conditions {
+  direction: rtl;
+  padding: 70px 35px;
+}
+.terms-and-conditions h2 {
+  text-align: center;
+  margin: 20px 0 50px;
+  font-size: 33px;
+  font-weight: 700;
+}
+.terms-and-conditions h5{
+  font-weight: 800;
+  margin: 25px 0;
+  font-size: 20px;
+}
+.terms-and-conditions p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 18px;
+}
+
+@media (max-width: 415px) {
+  .terms-and-conditions {
+    direction: rtl;
+    padding: 70px 20px;
+  }
+  .terms-and-conditions h2 {
+    font-size: 25px;
+    font-weight: 700;
+  }  
+}

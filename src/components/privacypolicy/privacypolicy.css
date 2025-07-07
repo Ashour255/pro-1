@@ -1,0 +1,33 @@
+.privacypolicy {
+  direction: rtl;
+  padding: 70px 25px 20px;
+}
+.privacypolicy h2 {
+  text-align: center;
+  font-size: 35px;
+  margin-bottom: 80px;
+  font-weight: 700;
+  color: #111827;
+}
+.privacypolicy h3 {
+  font-size: 32px;
+  font-weight: 900;
+  margin: 7px 0;
+}
+.privacypolicy h4 {
+  font-size: 25px;
+  font-weight: 900;
+}
+.privacypolicy p {
+  color: #6b7280;
+  font-size: 18px;
+  margin: 0;
+}
+.privacypolicy div {
+  margin-bottom: 70px;
+}
+@media (max-width: 400px) {
+  .privacypolicy h2 {
+    font-size: 30px;
+  }
+}

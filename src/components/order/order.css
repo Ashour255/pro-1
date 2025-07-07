@@ -1,0 +1,296 @@
+.thanks-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 10px;
+  text-align: center;
+}
+.thanks-container h2 {
+  color: #131316;
+  font-size: 35px;
+  font-weight: 700;
+}
+.thanks-container p {
+  font-size: 22px;
+  margin: 0;
+  margin-bottom: 7px;
+  font-weight: 400;
+}
+.thanks-container .offers-link {
+  text-decoration: underline;
+  padding-bottom: 23px;
+  text-underline-position: under;
+}
+.thanks-container .home-button {
+  color: white;
+  background: black;
+  padding: 10px;
+  margin-bottom: 62px;
+  display: block;
+  font-weight: 600;
+  border-radius: 7px;
+}
+@media (max-width:550px) {
+  .thanks-container h2 {
+    font-size: 25px;
+    font-weight: 600;
+    margin-bottom: 7px;
+  }
+  .thanks-container p {
+    font-size: 18px;
+    margin-bottom: 7px;
+    font-weight: 400;
+  }
+}
+
+
+/* order button */
+.order_invoice_container {
+  width: 100%;
+  background-color: white;
+}
+.order_invoice_container .invoice-wrapper {
+  max-width: 100%;
+  padding: 15px;
+  margin: 0 auto;
+  max-width: 1280px;
+}
+.order_invoice_container .invoice-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.order_invoice_container .logo {
+  width: 50px;
+  height: 40px;
+}
+.order_invoice_container .tracking-btn {
+  background-color: #e5e7eb;
+  padding: 0.5rem 1rem;
+  font-size: 16px;
+  color: #4b5563;
+  border-radius: 0.375rem;
+  transition: 0.3s;
+  border: none;
+}
+.order_invoice_container .tracking-btn:hover {
+  background-color: #f3f4f6;
+}
+.order_invoice_container .invoice-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 1.25rem;
+  border-top: 1px solid #e5e7eb;
+  margin: 30px 0px;
+  padding: 30px 0 0 0 ;
+}
+.invoice-left {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.invoice-address {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  font-size: 0.875rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+.invoice-address .label {
+  color: #6b7280;
+}
+.invoice-address .address {
+  margin-top: 10px;
+
+}
+.invoice-address .address a{
+  color: black;
+}
+.invoice-box {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+.shipping-details div {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+.shipping-details div span {
+  color: #6b7280;
+}
+.invoice-grid .infoSections {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #d1d5db;
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+.invoice-grid .infoSections .infoSection {
+  border-bottom: 1px solid #d1d5db;
+}
+.invoice-grid .infoSections .infoSection:last-child {
+  border-bottom: none;
+}
+.invoice-grid .infoSections .infoButton {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 20px 16px;
+  font-size: 0.875rem;
+  font-weight: bold;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+.invoice-grid .infoSections .infoButton:hover {
+  opacity: 0.8;
+}
+.invoice-grid .infoSections .infoButtonContent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.invoice-grid .infoSections .infoIcon {
+  height: 1.25rem;
+  width: 1.25rem;
+}
+.invoice-grid .infoSections .chevronIcon {
+  height: 1.25rem;
+  width: 1.25rem;
+}
+.invoice-grid .infoSections .chevronIcon.rotate {
+  transform: rotate(180deg);
+  transition: transform 0.3s ease;
+}
+.invoice-grid .infoSections .infoContent {
+  padding: 0 16px 16px;
+  font-size: 0.875rem;
+  color: #374151;
+  animation: fadeIn 0.3s ease-in-out;
+}
+.invoice-timeline {
+  list-style: disc inside;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+.invoice-timeline span {
+color: #6b7280;
+font-size: 15px;
+margin-left: 20px;
+}
+.invoice-right {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.order-status-box {
+  border: 1px solid #e5e7eb;
+  padding: 1.25rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+.order-status-box .order-status{
+  display: flex;
+  justify-content: space-between;
+}
+.status-title,
+.status-value {
+  font-size: 1.25rem;
+  margin-top: 0.5rem;
+}
+.product-item {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+.product-img {
+  max-height: 240px;
+  border-radius: 0.5rem;
+  object-fit: cover;
+  background: #f3f4f6;
+  width: 90px;
+  height: 90px;
+}
+.product-info {
+  display: flex;
+  justify-content: space-between;
+  flex: 1;
+  gap: 1rem;
+}
+.product-info h4 {
+  margin-bottom: 3px;
+  font-size: 18px;
+}
+.product-info p {
+  margin: 0;
+  margin-bottom: 0px;
+  color: #6b7280;
+}
+.total-price {
+  font-size: 1.125rem;
+  color: black !important;
+}
+
+.summary-box {
+  padding: 1.25rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+.summary-box div {
+  display: flex;
+  justify-content: space-between;
+}
+.summary-box div h6 span {
+  color: #6b7280 !important;
+}
+.total-row {
+  padding-top: 0.5rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+
+
+
+@media (max-width: 768px) {
+  .order_invoice_container .invoice-grid {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+  .order_invoice_container .tracking-btn {
+    padding: 7px 10px;
+    font-size: 14px;
+  }
+  .product-info {
+    display: block;
+  }
+  .product-item {
+    display: block;
+  }
+  .total-price {
+    margin-top: 20px !important;
+    margin-bottom: 20px !important;
+  }
+  .product-info h4 {
+    margin: 0;
+    font-size: 18px;
+    margin-top: 15px;
+    }
+}
+
+@media (max-width:600px) {
+  .product-img {
+    max-height: 340px;
+    border-radius: 0.5rem;
+    object-fit: cover;
+    background: #f3f4f6;
+    width: 100%;
+    height: 100%;
+  }
+}

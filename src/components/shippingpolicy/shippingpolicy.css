@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&family=Tajawal:wght@200;300;400;500;700;800;900&display=swap');
+
+.shipping-policy {
+  direction: rtl;
+  padding: 70px 25px;
+  margin-bottom: 50px;
+}
+.shipping-policy h2 {
+  margin-bottom: 50px;
+  text-align: center;
+  font-weight: 800;
+  font-size: 33px;
+  color: rgb(17 24 39);
+}
+.description .title-3 {
+  font-size: 25px !important;
+  /* font-weight: 900 !important; */
+  color: rgb(17 24 39);
+  /* font-family: "Tajawal", sans-serif; */
+  font-weight: 600 !important;
+}
+.shipping-policy .description {
+  color: #6b7280;
+  /* font-family: "Tajawal", sans-serif; */
+  margin-bottom: 5px;
+  font-size: 18px;
+}

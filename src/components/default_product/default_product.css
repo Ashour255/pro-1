@@ -1,0 +1,164 @@
+.default-product {
+  padding: 5px;
+  margin-bottom: 70px;
+}
+.default-product .title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0;
+}
+.default-product .default-product-itme-1,
+.default-product .default-product-itme-2 {
+  padding: 15px;
+  border: 2px solid #e5e7eb;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  color: #131316;
+}
+.default-product a {
+  text-decoration: none;
+  color: #131316;
+}
+.default-product .default-product-itme-1 .span {
+  display: flex;
+  justify-content: center;
+  padding: 2px 5px;
+  margin: 3px auto 12px;
+  background: rgb(33 33 33);
+  color: white;
+  width: max-content;
+  border-radius: 8px;
+  font-size: 14px;
+}
+.default-product .default-product-itme-2 .span {
+  padding: 2px 5px;
+  margin: 3px auto 12px;
+  background: rgb(33 33 33);
+  color: white;
+  width: max-content;
+  border-radius: 8px;
+  font-size: 14px;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%);
+}
+.default-product .default-product-itme-1 .img,
+.default-product .default-product-itme-2 .img {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+}
+.default-product .default-product-itme-1 .img-fluid {
+  max-width: 600px;
+  margin-bottom: 67px;
+  border-radius: 8px;
+}
+.default-product .default-product-itme-2 .img-fluid {
+  max-width: 260px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+}
+.default-product .default-product-itme-1 h6,
+.default-product .default-product-itme-2 h6 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #131316;
+  margin-bottom: 15px;
+}
+.default-product .default-product-itme-1 .price,
+.default-product .default-product-itme-2 .price {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 5px;
+  align-items: center;
+}
+.default-product .default-product-itme-1 .price p,
+.default-product .default-product-itme-2 .price p {
+  margin: 0;
+}
+.default-product .default-product-itme-1 .price .price-1,
+.default-product .default-product-itme-2 .price .price-1 {
+  font-weight: 600;
+  font-size: 20px;
+}
+.default-product .default-product-itme-1 .price .price-2,
+.default-product .default-product-itme-2 .price .price-2 {
+  font-size: 15px;
+}
+
+@media (max-width: 991px) {
+  .default-product .default-product-itme-1 .span {
+    position: absolute;
+    top: 0;
+  }
+  .default-product .default-product-itme-1 {
+    padding: 20px;
+  }
+  .default-product .default-product-itme-1 .img-fluid {
+    margin-bottom: 10px;
+  }
+}
+@media (max-width: 991px) and (min-width: 767px) {
+  .default-product .default-product-itme-1 .content,
+  .default-product .default-product-itme-2 .content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0 0;
+  }
+  .default-product .default-product-itme-1 .content .price,
+  .default-product .default-product-itme-2 .content .price {
+    display: flex;
+    flex-direction: column-reverse;
+    text-align: end;
+    gap: 0;
+  }
+  .default-product .default-product-itme-1 .content .price .price-1,
+  .default-product .default-product-itme-2 .content .price .price-1 {
+    font-size: 20px;
+  }
+  .default-product .default-product-itme-1 .content .price .price-2,
+  .default-product .default-product-itme-2 .content .price .price-2 {
+    font-size: 16px;
+  }
+  .default-product .default-product-itme-1,
+  .default-product .default-product-itme-2 {
+    padding: 20px 20px 10px;
+  }
+  .default-product .default-product-itme-1 h6,
+  .default-product .default-product-itme-2 h6 {
+    font-size: 18px;
+  }
+}
+@media (max-width: 767px) {
+  .default-product .default-product-itme-1 .price {
+    margin-bottom: 0px;
+  }
+}
+@media (max-width: 430px) {
+  .default-itme {
+    padding: 0 5px;
+  }
+  .default-product .default-product-itme-1 h6,
+  .default-product .default-product-itme-2 h6 {
+    font-size: 17px;
+    font-weight: 500;
+  }
+  .default-product .default-product-itme-1 .price .price-1,
+  .default-product .default-product-itme-2 .price .price-1 {
+    font-weight: 500;
+    font-size: 15px;
+  }
+  .default-product .default-product-itme-1 .price .price-2,
+  .default-product .default-product-itme-2 .price .price-2 {
+    font-size: 13px;
+  }
+  .default-product .default-product-itme-1,
+.default-product .default-product-itme-2{
+  padding: 10px;
+}
+}

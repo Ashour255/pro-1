@@ -1,0 +1,74 @@
+.search-container {
+  margin: 3.5rem auto 0 auto;
+  margin-bottom: 50px;
+  width: 100%;
+  max-width: 100%;
+  flex: 1;
+  padding: 0.25rem 1rem;
+}
+@media (min-width: 640px) {
+  .search-container {
+    padding: 0.5rem 1.5rem;
+  }
+}
+@media (min-width: 1280px) {
+  .search-container {
+    max-width: 1280px;
+    padding: 0 2rem;
+  }
+}
+.search-container .full-width {
+  width: 100%;
+}
+.search-container .search-bar-container {
+  display: flex;
+  width: 100%;
+  align-items: flex-end;
+}
+.search-container .search-input-wrapper {
+  width: 100%;
+  margin-inline-end: 0.5rem;
+}
+.search-container .search-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #4b5563; 
+}
+.search-container .input-container {
+  position: relative;
+  margin-top: 0.25rem;
+}
+.search-container .global-input {
+  display: block;
+  width: 100%;
+  border: 1px solid #d1d5db;
+  padding: 0.5rem;
+  border-radius: 0;
+  box-shadow: none;
+  font-size: 0.875rem;
+}
+.search-container .global-input:focus {
+  border-color: black;
+  outline: none;
+  box-shadow: 0 0 0 1px black;
+}
+.search-container .search-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: white;
+  background-color: black;
+  border: none;
+  max-height: 2.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  font-family: 'League Spartan', sans-serif;
+}
+.search-container .search-button:hover {
+  background-color: rgba(0, 0, 0, 0.808);
+}

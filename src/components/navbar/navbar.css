@@ -1,0 +1,131 @@
+.nav-navbar {
+  background-color: white;
+  padding: 0 10px 10px !important;
+  border-bottom: 2px solid #b7b7b738;
+}
+.nav-navbar .header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.nav-navbar .header-bar .menu-button {
+  font-size: 30px;
+  margin-left: 10px;
+  visibility: hidden;
+  cursor: pointer;
+}
+.nav-navbar .header-bar .menu-button .menu-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.nav-navbar .header-bar .header-right {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+}
+.nav-navbar .header-links {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+}
+.nav-navbar .header-links a,
+.duwo a {
+  color: #5b5b5b;
+  text-decoration: none;
+  font-size: 15px;
+      text-transform: uppercase;
+}
+.nav-navbar .cart-button {
+  position: relative;
+  cursor: pointer;
+}
+.nav-navbar .header-bar .cart-button .cart-count {
+  display: block;
+  position: absolute;
+  background: black;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  border-radius: 50%;
+  left: -7px;
+  font-size: 13px;
+  top: -3px;
+  color: white;
+}
+.nav-navbar .header-bar .i {
+  color: black;
+  width: 20px;
+}
+.nav-navbar .logo .logo-image {
+  width: 85px;
+  margin-left: 30px;
+}
+.sections {
+  position: relative;
+  cursor: pointer;
+}
+
+.duwo {
+  position: absolute;
+  top: 100%; /* يظهر تحت العنصر مباشرة */
+  left: 50%;
+  transform: translateX(-60%) translateY(-20px); /* يبدأ مرتفع شوي */
+  opacity: 0;
+  background: white;
+  width: 500px;
+  padding: 20px;
+  /* justify-content: start; */
+  /* gap: 20px; */
+  /* flex-wrap: wrap; */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  /* display: flex; */
+  pointer-events: none;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  z-index: 999;
+}
+
+.sections:hover .duwo {
+  transform: translateX(-60%) translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.icon {
+  font-size: 15px;
+  transition: 0.4s;
+  color: #374151;
+}
+
+.sections:hover .icon {
+  transform: rotate(-180deg);
+  transition: transform 0.3s ease;
+}
+
+@media (max-width: 1000px) {
+  .nav-navbar .header-links {
+    display: none;
+  }
+  .nav-navbar .header-bar .menu-button {
+    visibility: visible;
+  }
+}
+@media (max-width: 400px) {
+  .nav-navbar {
+    padding: 0 10px !important;
+  }
+  .nav-navbar .header-bar .header-right {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-right: 0px !important;
+  }
+  .nav-navbar .header-bar .i {
+    color: black;
+    width: 15px;
+  }
+  .nav-navbar .logo .logo-image {
+    width: 75px;
+    margin-left: 10px;
+  }
+}
