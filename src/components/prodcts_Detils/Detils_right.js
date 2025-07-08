@@ -90,7 +90,7 @@ export default function Detils_right({ slug }) {
     dispatch(setCartOpen(false));
   };
 
-  if (!data && !error) return <Loading />;
+  // if (!data && !error) return <Loading />;
   if (error) return <p style={{ color: "red" }}>خطأ: {error}</p>;
 
   return (
@@ -117,7 +117,7 @@ export default function Detils_right({ slug }) {
           <div className="priceAfterDiscount">
             <p className="priceLabel">Price After Discount</p>
             <p id="sale-price" className="discountedPrice">
-              {currentPrice ?? "Loading..."}
+              {currentPrice}
             </p>
             <span className="currencyLarge">SAR</span>
           </div>

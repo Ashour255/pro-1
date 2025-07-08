@@ -33,7 +33,6 @@ export default function Home() {
       <Bestseller />
       <Imghome />
       <Default_product />
-
     </div>
   );
 }

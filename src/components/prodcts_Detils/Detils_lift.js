@@ -117,7 +117,7 @@ const Detils_lift = ({ productImages = [] }) => {
       ) : (
         <div
           style={{
-            marginTop: "50px",
+            // marginTop: "50px",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -126,13 +126,13 @@ const Detils_lift = ({ productImages = [] }) => {
             minHeight: "50vh",
           }}
         >
-          <Image
+          {/* <Image
             src="/imges/Animation -cart.gif"
             alt="No Images"
             width={150}
             height={150}
             className="mb-4"
-          />
+          /> */}
           <h2 className="text-2xl font-bold">لا توجد صور للمنتج</h2>
           <p>لا يوجد معرض صور متاح لهذا المنتج.</p>
         </div>

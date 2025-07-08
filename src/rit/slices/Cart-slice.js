@@ -5,9 +5,9 @@ const updateLocalStorage = (items) => {
   if (typeof window !== "undefined") {
     try {
       localStorage.setItem("cart", JSON.stringify(items));
-      console.log("تم تحديث localStorage بنجاح:", items);
+      // console.log("تم تحديث localStorage بنجاح:", items);
     } catch (error) {
-      console.error("فشل تحديث localStorage:", error);
+      // console.error("فشل تحديث localStorage:", error);
     }
   }
 };
@@ -16,7 +16,7 @@ const updateLocalStorage = (items) => {
 const getInitialCart = () => {
   // إذا كنا على السيرفر، رجّع سلة فارغة مباشرة
   if (typeof window === "undefined") {
-    console.log("SSR: تهيئة سلة فارغة");
+    // console.log("SSR: تهيئة سلة فارغة");
     return [];
   }
 
@@ -31,9 +31,9 @@ const getInitialCart = () => {
       }
     }
   } catch (error) {
-    console.error("فشل قراءة بيانات السلة:", error);
+    // console.error("فشل قراءة بيانات السلة:", error);
   }
-  console.log("لا توجد بيانات في localStorage، تهيئة سلة فارغة");
+  // console.log("لا توجد بيانات في localStorage، تهيئة سلة فارغة");
   return [];
 };
 
@@ -47,7 +47,7 @@ export const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, action) => {
-      console.log("جارٍ إضافة منتج:", action.payload);
+      // console.log("جارٍ إضافة منتج:", action.payload);
       const existing = state.items.find((item) => item.slug === action.payload.slug);
       if (existing) {
         existing.qty += 1; // زيادة الكمية بـ 1 لو المنتج موجود
@@ -57,7 +57,7 @@ export const cartSlice = createSlice({
       updateLocalStorage(state.items);
     },
     deleteFromCart: (state, action) => {
-      console.log("جارٍ حذف منتج بـ slug:", action.payload.slug);
+      // console.log("جارٍ حذف منتج بـ slug:", action.payload.slug);
       state.items = state.items.filter((item) => item.slug !== action.payload.slug);
       updateLocalStorage(state.items);
     },
@@ -67,12 +67,12 @@ export const cartSlice = createSlice({
       updateLocalStorage([]);
     },
     setCart: (state, action) => {
-      console.log("جارٍ تعيين بيانات جديدة للسلة:", action.payload);
+      // console.log("جارٍ تعيين بيانات جديدة للسلة:", action.payload);
       state.items = Array.isArray(action.payload) ? action.payload : [];
       updateLocalStorage(state.items);
     },
     increaseQuantity: (state, action) => {
-      console.log("جارٍ زيادة الكمية لـ slug:", action.payload.slug);
+      // console.log("جارٍ زيادة الكمية لـ slug:", action.payload.slug);
       const item = state.items.find((item) => item.slug === action.payload.slug);
       if (item && item.qty < 99) {
         item.qty += 1;
@@ -80,7 +80,7 @@ export const cartSlice = createSlice({
       updateLocalStorage(state.items);
     },
     decreaseQuantity: (state, action) => {
-      console.log("جارٍ تقليل الكمية لـ slug:", action.payload.slug);
+      // console.log("جارٍ تقليل الكمية لـ slug:", action.payload.slug);
       const item = state.items.find((item) => item.slug === action.payload.slug);
       if (item) {
         if (item.qty > 1) {
@@ -92,7 +92,7 @@ export const cartSlice = createSlice({
       updateLocalStorage(state.items);
     },
     setCartOpen: (state, action) => {
-      console.log("تحديث حالة السلة:", action.payload);
+      // console.log("تحديث حالة السلة:", action.payload);
       state.isCartOpen = action.payload;
     },
   },

@@ -3,7 +3,8 @@ import "./globals.css";
 import Bootstrap from "@/components/Bootstartp";
 import Navbar from "@/components/navbar/Navbar";
 import Footer from "@/components/footer/Footer";
-import { Providers } from '@/rit/provider';
+import { Providers } from "@/rit/provider";
+import Pixel_home from "@/components/pixel/Pixel_home";
 
 export const metadata = {
   title: "Create Next App",
@@ -15,6 +16,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body cz-shortcut-listen="ture">
         <Providers>
+          {/* <Pixel_home /> */}
           <Bootstrap />
           <Topnav />
           <Navbar />

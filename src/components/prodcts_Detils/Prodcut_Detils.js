@@ -37,6 +37,7 @@ export default function Prodcut_Detils({ slug }) {
   const productImages =
     data?.data[0]?.media?.map((item) => item.cover_Product) || [];
 
+
   return (
     <div className="prodcut-detils">
       <div className="container">
