@@ -7,14 +7,13 @@ import { useSelector } from "react-redux";
 import Loading from "@/app/loading";
 
 export default function Default_product() {
-  
   const globalValue = useSelector((state) => state.global.globalValue);
   const [data, setData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       const res = await fetch(
-        `https://altamyouzkw.com/api/products_best_rival?merchant_id=${globalValue}`,
+        `https://shehab.farmin.online/api/products_best_rival?merchant_id=${globalValue}`,
         {
           revalidate: 0,
         }
@@ -23,11 +22,12 @@ export default function Default_product() {
       setData(result?.data);
     };
     fetchData();
-  }, []);
+  }, [globalValue]);
+
+  if (!data || data.length < 5) return <Loading />;
 
   return (
     <div className="default-product">
-      {!data && <Loading /> }
       <div className="container">
         <div className="title">
           <h2>.</h2>
@@ -35,14 +35,20 @@ export default function Default_product() {
             <Link href={"/product"}>More</Link>
           </div>
         </div>
+
         <div className="row">
-          <div className="col-12 col-lg-6 default-itme">
+          {/* أول منتج */}
+          <div
+            data-aos="fade-up"
+            data-aos-delay="100"
+            className="col-12 col-lg-6 default-itme"
+          >
             <div className="default-product-itme-1" title="Art Deco">
-              <Link href={`prodcut/${data[0]?.slug}`}>
+              <Link href={`/prodcut/${data[0]?.slug}`}>
                 <div className="img">
                   <span className="span">{data[0]?.discount_percentage}%</span>
                   <Image
-                    src={data[0]?.cover_Product ||  "/imges/p2.webp"}
+                    src={data[0]?.cover_Product || "/imges/p2.webp"}
                     alt=".."
                     className="img-fluid"
                     width={300}
@@ -62,13 +68,20 @@ export default function Default_product() {
               </Link>
             </div>
           </div>
+
+          {/* المنتج 2 و 3 */}
           <div className="col-6 col-lg-3 default-itme">
-            <div className="default-product-itme-2" title="Art Deco">
-              <Link href={`prodcut/${data[1]?.slug}`}>
+            <div
+              data-aos="fade-up"
+              data-aos-delay="150"
+              className="default-product-itme-2"
+              title="Art Deco"
+            >
+              <Link href={`/prodcut/${data[1]?.slug}`}>
                 <div className="img">
                   <span className="span">{data[1]?.discount_percentage}%</span>
                   <Image
-                    src={data[1]?.cover_Product ||  "/imges/p2.webp"}
+                    src={data[1]?.cover_Product || "/imges/p2.webp"}
                     alt=".."
                     className="img-fluid"
                     width={300}
@@ -87,12 +100,18 @@ export default function Default_product() {
                 </div>
               </Link>
             </div>
-            <div className="default-product-itme-2" title="Art Deco">
-              <Link href={`prodcut/${data[2]?.slug}`}>
+
+            <div
+              data-aos="fade-up"
+              data-aos-delay="200"
+              className="default-product-itme-2"
+              title="Art Deco"
+            >
+              <Link href={`/prodcut/${data[2]?.slug}`}>
                 <div className="img">
                   <span className="span">{data[2]?.discount_percentage}%</span>
                   <Image
-                    src={data[2]?.cover_Product ||  "/imges/p2.webp"}
+                    src={data[2]?.cover_Product || "/imges/p2.webp"}
                     alt=".."
                     className="img-fluid"
                     width={300}
@@ -112,13 +131,20 @@ export default function Default_product() {
               </Link>
             </div>
           </div>
+
+          {/* المنتج 4 و 5 */}
           <div className="col-6 col-lg-3 default-itme">
-            <div className="default-product-itme-2" title="Art Deco">
-              <Link href={`prodcut/${data[3]?.slug}`}>
+            <div
+              data-aos="fade-up"
+              data-aos-delay="250"
+              className="default-product-itme-2"
+              title="Art Deco"
+            >
+              <Link href={`/prodcut/${data[3]?.slug}`}>
                 <div className="img">
                   <span className="span">{data[3]?.discount_percentage}%</span>
                   <Image
-                    src={data[3]?.cover_Product ||  "/imges/p2.webp"}
+                    src={data[3]?.cover_Product || "/imges/p2.webp"}
                     alt=".."
                     className="img-fluid"
                     width={300}
@@ -137,12 +163,18 @@ export default function Default_product() {
                 </div>
               </Link>
             </div>
-            <div className="default-product-itme-2" title="Art Deco">
-              <Link href={`prodcut/${data[4]?.slug}`}>
+
+            <div
+              data-aos="fade-up"
+              data-aos-delay="300"
+              className="default-product-itme-2"
+              title="Art Deco"
+            >
+              <Link href={`/prodcut/${data[4]?.slug}`}>
                 <div className="img">
                   <span className="span">{data[4]?.discount_percentage}%</span>
                   <Image
-                    src={data[4]?.cover_Product ||  "/imges/p2.webp"}
+                    src={data[4]?.cover_Product || "/imges/p2.webp"}
                     alt=".."
                     className="img-fluid"
                     width={300}

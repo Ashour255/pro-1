@@ -8,7 +8,7 @@ export default function Order_top() {
       <div className="thanks-container">
         <div className="thanks-lottie">
           <DotLottieReact
-            src="/imges/Animation - 1745926642983.lottie"
+            src="/imges/Animation1745926642983.lottie"
             autoplay
             style={{ height: "350px" } }
           />

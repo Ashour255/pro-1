@@ -20,7 +20,10 @@ const Detils_lift = ({ productImages = [] }) => {
   }, []);
 
   return (
-    <div className="product-gallery">
+    <div
+      
+      className="product-gallery slide-up"
+    >
       {isClient && productImages.length > 0 ? (
         <>
           {/* Desktop */}

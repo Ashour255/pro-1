@@ -17,6 +17,7 @@ const formatPrice = (price) => {
   return Number.isInteger(num) ? num.toString() : num.toFixed(2);
 };
 
+
 export default function Checkout_right() {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items) || [];
@@ -30,15 +31,18 @@ export default function Checkout_right() {
   );
 
   const handleIncrease = (item) => {
-    dispatch(increaseQuantity({ slug: item.slug }));
+    // Pass slug, selectedColor, and selectedSize to identify the exact item
+    dispatch(increaseQuantity({ slug: item.slug, selectedColor: item.selectedColor, selectedSize: item.selectedSize }));
   };
 
   const handleDecrease = (item) => {
-    dispatch(decreaseQuantity({ slug: item.slug }));
+    // Pass slug, selectedColor, and selectedSize to identify the exact item
+    dispatch(decreaseQuantity({ slug: item.slug, selectedColor: item.selectedColor, selectedSize: item.selectedSize }));
   };
 
   const handleRemoveItem = (item) => {
-    dispatch(deleteFromCart({ slug: item.slug }));
+    // Pass slug, selectedColor, and selectedSize to identify the exact item
+    dispatch(deleteFromCart({ slug: item.slug, selectedColor: item.selectedColor, selectedSize: item.selectedSize }));
   };
 
   return (
@@ -48,8 +52,11 @@ export default function Checkout_right() {
 
         <ul className="cart-items">
           {cartItems.length > 0 && (
-            cartItems.map((item) => (
-              <li key={item.slug} className="cart-item">
+            cartItems.map((item, index) => (
+              <li
+                key={`${item.slug}-${item.selectedColor}-${item.selectedSize}-${index}`} // Changed key to include selectedColor and selectedSize
+                className="cart-item"
+              >
                 <div className="item-image">
                   <Image
                     width={300}
@@ -65,6 +72,34 @@ export default function Checkout_right() {
                     <h3>{item.name}</h3>
                     <p>{formatPrice(item.price)} SAR</p>
                   </div>
+
+                  {/* Display selected color and size */}
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "10px",
+                      alignItems: "center",
+                      marginTop: "5px",
+                      marginBottom: "5px",
+                      fontSize: "0.9em",
+                      color: "#6b7280"
+                    }}
+                  >
+                    {item.selectedSize && <span>Size: {item.selectedSize}</span>}
+                    {item.selectedColor && (
+                      <div
+                        className="colorCircleCart" // Re-using the class from sidecart.css
+                        style={{
+                          backgroundColor: item.selectedColor,
+                          width: "15px",
+                          height: "15px",
+                          borderRadius: "50%",
+                          border: "1px solid #ccc"
+                        }}
+                      ></div>
+                    )}
+                  </div>
+
 
                   <div className="item-info">
                     <p className="item-total">
@@ -97,6 +132,11 @@ export default function Checkout_right() {
                 </div>
               </li>
             ))
+          )}
+          {cartItems.length === 0 && (
+            <p style={{ textAlign: "center", padding: "20px" }}>
+              Your cart is empty.
+            </p>
           )}
         </ul>
 

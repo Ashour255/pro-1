@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import "./prodcut_detils.css";
 import {
   faChevronDown,
@@ -15,6 +15,7 @@ import Loading from "@/app/loading";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Sidecart from "@/components/sideCart/Sidecart";
+import ModelProduct from "../modelProduct/ModelProduct";
 
 export default function Detils_right({ slug }) {
   const dispatch = useDispatch();
@@ -25,46 +26,82 @@ export default function Detils_right({ slug }) {
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
   const [currentPrice, setCurrentPrice] = useState(null);
-  const [openShipping, setOpenShipping] = useState(false);
-  const [openReturn, setOpenReturn] = useState(false);
+  const [currentPriceBefore, setCurrentPriceBefore] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [isAddToCartClicked, setIsAddToCartClicked] = useState(false); // حالة جديدة لتتبع النقر على "إضافة إلى السلة"
+  const formRef = useRef(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetch(
-          `https://altamyouzkw.com/api/products-show/${slug}?merchant_id=${globalValue}`,
-          { cache: "no-store" }
-        );
-        if (!res.ok) {
-          throw new Error(`فشل الطلب: ${res.status} - ${res.statusText}`);
-        }
-        const result = await res.json();
-        setData(result);
-        setCurrentPrice(result?.data[0]?.price);
-      } catch (error) {
-        setError(error.message);
+  const productData = data?.data?.[0];
+  const colors = productData?.options_color?.[0]?.values || [];
+  const sizes = productData?.options_size?.[0]?.values || [];
+  const hasColors = colors.length > 0;
+  const hasSizes = sizes.length > 0;
+
+  const fetchData = useCallback(async () => {
+    try {
+      const res = await fetch(
+        `https://shehab.farmin.online/api/products-show/${slug}?merchant_id=${globalValue}`,
+        { cache: "no-store" }
+      );
+      if (!res.ok) {
+        throw new Error(`فشل الطلب: ${res.status} - ${res.statusText}`);
       }
-    };
-    fetchData();
+      const result = await res.json();
+      setData(result);
+    } catch (error) {
+      setError(error.message);
+    }
   }, [slug, globalValue]);
 
   useEffect(() => {
-    if (data?.data) {
-      let price = data?.data[0]?.price;
-      const colorObj = data?.data[0]?.colors?.find(
-        (c) => c.name === selectedColor
-      );
-      const sizeObj = data?.data[0]?.sizes?.find(
-        (s) => s.name === selectedSize
-      );
-      if (colorObj) price = colorObj.price;
-      if (sizeObj) price = sizeObj.price;
-      setCurrentPrice(price);
+    fetchData();
+  }, [fetchData]);
+
+  useEffect(() => {
+    if (!data?.data?.[0]) {
+      setCurrentPrice(null);
+      setCurrentPriceBefore(null);
+      return;
     }
+
+    const baseProduct = data.data[0];
+    let newPrice = baseProduct.price;
+    let newPriceBefore = baseProduct.price_before;
+
+    const selectedColorData = baseProduct.options_color?.[0]?.values?.find(
+      (c) => c.value === selectedColor
+    );
+
+    const selectedSizeData = baseProduct.options_size?.[0]?.values?.find(
+      (s) => s.value === selectedSize
+    );
+
+    if (selectedColorData && selectedColorData.price !== null) {
+      newPrice = selectedColorData.price;
+      newPriceBefore =
+        selectedColorData.price_before !== null
+          ? selectedColorData.price_before
+          : baseProduct.price_before;
+    }
+    if (selectedSizeData && selectedSizeData.price !== null) {
+      newPrice = selectedSizeData.price;
+      newPriceBefore =
+        selectedSizeData.price_before !== null
+          ? selectedSizeData.price_before
+          : baseProduct.price_before;
+    }
+
+    setCurrentPrice(newPrice);
+    setCurrentPriceBefore(newPriceBefore);
   }, [selectedColor, selectedSize, data]);
 
   const handleAddToCart = () => {
     if (typeof window === "undefined") {
+      return;
+    }
+    const product_quantity = productData?.product_quantity;
+    if (!product_quantity || product_quantity == 0) {
+      toast.error("هذا المنتج غير متوفر في المخزون.");
       return;
     }
     if (data?.data && data.data[0]) {
@@ -72,45 +109,76 @@ export default function Detils_right({ slug }) {
         id: data.data[0].id,
         name: data.data[0].name,
         price: currentPrice,
-        image_Product:
-          data?.data[0]?.media[0]?.cover_Product,
+        image_Product: data?.data[0]?.media[0]?.cover_Product,
         slug: data.data[0].slug,
         qty: 1,
+        selectedColor: selectedColor,
+        selectedSize: selectedSize,
+        price_before: currentPriceBefore,
+        product_quantity: data.data[0].product_quantity,
       };
       dispatch(addToCart(product));
       dispatch(setCartOpen(true));
-      toast.success("تم إضافة المنتج إلى السلة!");
+      setIsAddToCartClicked(true); // تحديث الحالة عند النقر على إضافة إلى السلة
+      toast.success("Product added to cart successfully", {
+        toastId: "added-cart",
+      });
     } else {
       toast.error("فشل إضافة المنتج، حاول مرة أخرى.");
     }
   };
 
-
   const handleCloseCart = () => {
     dispatch(setCartOpen(false));
   };
 
-  // if (!data && !error) return <Loading />;
-  if (error) return <p style={{ color: "red" }}>خطأ: {error}</p>;
+  useEffect(() => {
+    if (!cartOpen && isAddToCartClicked) {
+      const timer = setTimeout(() => {
+        setShowModal(true);
+      }, 1000); // تأخير 1000 مللي ثانية
+      return () => clearTimeout(timer);
+    }
+  }, [cartOpen, isAddToCartClicked]);
+
+  const handleBuyNow = useCallback(
+    async (formDataFromDetilsForm) => {
+      if (typeof window === "undefined") {
+        return;
+      }
+
+      const orderDetails = {
+        product: {
+          id: productData?.id,
+          name: productData?.name,
+          price: currentPrice,
+          image: productData?.media?.[0]?.cover_Product,
+          selectedColor: selectedColor,
+          selectedSize: selectedSize,
+        },
+        customer_info: formDataFromDetilsForm,
+      };
+
+      toast.info("جاري معالجة طلب الشراء الفوري...");
+    },
+    [productData, currentPrice, selectedColor, selectedSize]
+  );
+
+  const handleBuyNowClick = () => {
+    if (formRef.current) {
+      formRef.current.requestSubmit();
+    }
+  };
 
   return (
-    <div className="productContainer">
+    <div  className="productContainer .slideup">
       <div className="productHeader">
-        <h1 className="productName">{data?.data[0]?.name || "Product Name"}</h1>
-        <div className="ratingContainer">
-          <div className="stars">
-            {[...Array(5)].map((_, i) => (
-              <FontAwesomeIcon key={i} icon={faStar} className="starIcon" />
-            ))}
-          </div>
-        </div>
+        <h1 className="productName">{productData?.name || "Product Name"}</h1>
 
         <div className="priceContainer">
           <div className="priceBeforeDiscount">
             <p className="priceLabel">Price Before Discount</p>
-            <p className="originalPrice">
-              {data?.data[0]?.price_before ?? "-"}
-            </p>
+            <p className="originalPrice">{currentPriceBefore ?? "-"}</p>
             <span className="currency">SAR</span>
           </div>
 
@@ -123,208 +191,115 @@ export default function Detils_right({ slug }) {
           </div>
         </div>
 
+        {/* <div className="ratingContainer">
+          <div className="stars">
+            {[...Array(5)].map((_, i) => (
+              <FontAwesomeIcon key={i} icon={faStar} className="starIcon" />
+            ))}
+          </div>
+        </div> */}
+
+        {productData?.activate_virtual_inventory_feature === 1 && (
+          <p style={{ color: "red", fontWeight: "bold" }}>
+            <em>Only a few pieces 5 left</em>
+          </p>
+        )}
+
+        {(productData?.show_fake_visitor_counter == 1) === 1 && (
+          <p>
+            <em>
+              This product is currently being viewed by{" "}
+              {productData?.minimum_visitors_viewing_page} to{" "}
+              {productData?.Maximum_visitors_viewing_page} visitors
+            </em>
+          </p>
+        )}
+
         <div className="productOptions">
-          <div className="colorsContainer">
-            <label className="sectionLabel">Colors:</label>
-            <div className="colorOptions">
-              {data?.data[0]?.colors?.map((color, index) => (
-                <div
-                  key={index}
-                  className={`colorCircle ${
-                    selectedColor === color.name ? "selected" : ""
-                  }`}
-                  style={{ backgroundColor: color.code || "#ccc" }}
-                  onClick={() => setSelectedColor(color.name)}
-                  title={color.name}
-                />
-              ))}
+          {hasColors && (
+            <div className="colorsContainer">
+              <label className="sectionLabel">Colors:</label>
+              <div className="colorOptions">
+                {colors.map((color, index) => (
+                  <div
+                    key={index}
+                    className={`colorCircle ${
+                      selectedColor === color.value ? "selected" : ""
+                    }`}
+                    onClick={() =>
+                      setSelectedColor(
+                        selectedColor === color.value ? null : color.value
+                      )
+                    }
+                    style={{ backgroundColor: color.value || "#ccc" }}
+                    title={color.value}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
-          <div className="sizesContainer">
-            <label className="sectionLabel">Sizes:</label>
-            <div className="sizeOptions">
-              {data?.data[0]?.sizes?.map((size, index) => (
-                <button
-                  key={index}
-                  className={`sizeButton ${
-                    selectedSize === size.name ? "selected" : ""
-                  }`}
-                  onClick={() => setSelectedSize(size.name)}
-                >
-                  {size.name}
-                </button>
-              ))}
+          {hasSizes && (
+            <div className="sizesContainer">
+              <label className="sectionLabel">Sizes :</label>
+              <div className="sizeOptions">
+                {sizes.map((size, index) => (
+                  <button
+                    key={index}
+                    className={`sizeButton ${
+                      selectedSize === size.value ? "selected" : ""
+                    }`}
+                    onClick={() =>
+                      setSelectedSize(
+                        selectedSize === size.value ? null : size.value
+                      )
+                    }
+                  >
+                    {size.value}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
-
       <div className="actionButtons">
-        <button className="buyNowButton">
+        <button
+          type="button"
+          className="submitButton"
+          onClick={handleBuyNowClick}
+        >
           <FontAwesomeIcon icon={faCreditCard} className="buttonIcon" />
-          Buy it now
+          {/* Buy it now */}
+          {productData?.text_on_button}
         </button>
-        <button className="addToCartButton" onClick={handleAddToCart}>
-          <Image
-            src="/imges/shopping-bag-svgrepo-com.svg"
-            className="cartIcon"
-            width={30}
-            height={20}
-            alt="shopping-bag"
-          />
-          Add to cart
-        </button>
-      </div>
-
-      <div className="infoSections">
-        <div className="infoSection">
-          <button
-            className="infoButton"
-            onClick={() => setOpenShipping(!openShipping)}
-          >
-            <span className="infoButtonContent">
-              <Image
-                width={100}
-                height={100}
-                src="/imges/shipment-check.svg"
-                alt="Shipping"
-                className="infoIcon"
-              />
-              Shipping & Returns
-            </span>
-            <FontAwesomeIcon
-              icon={faChevronDown}
-              className={`chevronIcon ${openShipping ? "rotate" : ""}`}
+        {productData?.skip_the_cart === 1 && (
+          <button className="addToCartButton" onClick={handleAddToCart}>
+            <Image
+              src="/imges/shopping-bag-svgrepo-com.svg"
+              className="cartIcon"
+              width={30}
+              height={20}
+              alt="shopping-bag"
             />
+            Add to cart
           </button>
-          {openShipping && (
-            <div className="infoContent">
-              <p>
-                We ship all over Egypt within 2-5 business days (Friday &
-                Saturday are not business days).
-              </p>
-              <p>
-                <strong>Delivery Time Per Destination:</strong>
-              </p>
-              <ul>
-                <li>Cairo & Alex : (2-4 business days)</li>
-                <li>Delta, Suez, Portsaid, Ismailya : (3-5 business days)</li>
-                <li>
-                  Beni Swef, Menya, Asyout, Sohag, Qatar : (3-5 business days)
-                </li>
-                <li>Qena, Luxor, Aswan : (1 week business days)</li>
-                <li>
-                  North Sinai, Red Sea, New Valley, Sallom : (1 week business
-                  days)
-                </li>
-              </ul>
-              <p>
-                <strong>Exchanges for Local Orders (Egypt):</strong>
-              </p>
-              <ul>
-                <li>
-                  Exchanges could be done within 14 days of receiving the order,
-                  with an extra fees for the exchange shipping.
-                </li>
-                <li>
-                  Refunds could be done within 14 days of receiving the order,
-                  with an extra fees for the exchange shipping.
-                </li>
-                <li>Refund or exchange could be via our varies channels</li>
-                <li>
-                  Once you'd like to talk to us, we're here to listen you for
-                  feedback, complains or exchanges. You could reach out via our
-                  various channels
-                </li>
-              </ul>
-              <p>
-                <strong>
-                  Our working hours are 11 AM - 11 PM (Friday & Saturday are
-                  off). All inquiries will be attended to within one working day
-                </strong>
-              </p>
-            </div>
-          )}
-        </div>
-
-        <div className="infoSection">
-          <button
-            className="infoButton"
-            onClick={() => setOpenReturn(!openReturn)}
-          >
-            <span className="infoButtonContent">
-              <Image
-                width={100}
-                height={100}
-                src="/imges/return-arrow.svg"
-                alt="Return"
-                className="infoIcon"
-              />
-              Request a Return | Exchange
-            </span>
-            <FontAwesomeIcon
-              icon={faChevronDown}
-              className={`chevronIcon ${openReturn ? "rotate" : ""}`}
-            />
-          </button>
-          {openReturn && (
-            <div className="infoContent">
-              <p className="m-0">
-                Exchanges: Exchanges are available through our Exchange Request
-                Form kindly fill the form and we will process your exchange
-                order. You can exchange Both sizes and products. Exchanges are
-                subject to 40 EGP shipping fees. ( Price difference in the
-                exchange order has to higher than or the same as your initial
-                purchase).
-              </p>
-              <p>
-                Refunds: Refunds are available for in any of our stores within
-                14 of your delivery. You can Refund for any reason.
-              </p>
-            </div>
-          )}
-        </div>
+        )}
       </div>
-
       <div className="productDescription">
         <p>
-          <em>
-            This is a demonstration store. You can purchase products like this
-            from{" "}
-            <a
-              href="https://www.mlouye.com/"
-              rel="noopener noreferrer"
-              target="_blank"
-              className="externalLink"
-            >
-              Mlouye
-            </a>
-            .
-          </em>
-        </p>
-        <p>
-          <em>
-            Our architectural, origami inspired shoulder bag, now has a new
-            dimension. It can be converted into a wrist bag just with a quick
-            move. The shoulder strap can easily be removed, so you can slung it
-            from your wrist or use as a clutch. It has plenty of room inside for
-            your essentials including a large phone, small wallet, and 300 ml
-            water bottle. Made from smooth leather and has a suede top with
-            two-way zip fastening. Interior features two slip pockets.{" "}
-          </em>
+          <em>{productData?.description || "No description available."}</em>
         </p>
         <h2>Materials</h2>
         <p>
           <em>
-            Crafted from smooth calf leather. Canvas lining. Brushed gold
-            hardware. Two interior pockets. Detachable and adjustable shoulder
-            strap.
+            {productData?.meta_description ||
+              "No materials information available."}
           </em>
         </p>
         <h2>Dimensions</h2>
         <p>
-          <em>h:21 X w:28 cm (8 1/2 X 11 1/4 in.)</em>
+          <em>h:21 X w:28 cm (8 1&apos;2 X 11 1&apos;4 in.)</em>
         </p>
         <h2>Care Instructions</h2>
         <p>
@@ -334,12 +309,34 @@ export default function Detils_right({ slug }) {
           </em>
         </p>
       </div>
-
+      {/* {productData?.skip_the_cart !== 1 && ( */}
       <div className="checkoutFormContainer">
-        <Detils_Form />
+        <Detils_Form
+          onSubmitForm={handleBuyNow}
+          initialGovernorate={"نجران"}
+          formRef={formRef}
+          price={currentPrice}
+          bottom_of_the_page={productData?.bottom_of_the_page}
+          product_quantity={productData?.product_quantity}
+          selectedColor={selectedColor}
+          selectedSize={selectedSize}
+          id={productData?.id}
+          product_name={productData?.name}
+          product_image={productData?.media?.[0]?.cover_Product}
+        />
       </div>
-      <ToastContainer autoClose={1000} position="top-center" zIndex={9999} />
-      {cartOpen && <Sidecart onClose={handleCloseCart} open={cartOpen} />}
+      {/* )} */}
+      {/* <ToastContainer autoClose={1000} position="top-center" /> */}
+      {/* {cartOpen && <Sidecart onClose={handleCloseCart} open={cartOpen} />} */}
+      {showModal && (
+        <ModelProduct
+          id={productData?.id}
+          onClose={() => {
+            setShowModal(false);
+            setIsAddToCartClicked(false); // إعادة تعيين الحالة عند إغلاق الموديل
+          }}
+        />
+      )}
     </div>
   );
 }

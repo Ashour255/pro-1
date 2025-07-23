@@ -4,7 +4,9 @@ import Bootstrap from "@/components/Bootstartp";
 import Navbar from "@/components/navbar/Navbar";
 import Footer from "@/components/footer/Footer";
 import { Providers } from "@/rit/provider";
-import Pixel_home from "@/components/pixel/Pixel_home";
+import { ToastContainer } from "react-toastify";
+import Aos from "@/components/Aos";
+import "aos/dist/aos.css";
 
 export const metadata = {
   title: "Create Next App",
@@ -16,13 +18,14 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body cz-shortcut-listen="ture">
         <Providers>
-          {/* <Pixel_home /> */}
           <Bootstrap />
           <Topnav />
           <Navbar />
           {children}
           <Footer />
         </Providers>
+        <Aos />
+        <ToastContainer autoClose={1000} position="top-center" />
       </body>
     </html>
   );

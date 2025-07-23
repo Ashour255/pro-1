@@ -24,7 +24,7 @@ export default function Sidebar(props) {
   useEffect(() => {
     const fetchData = async () => {
       const res = await fetch(
-        `https://altamyouzkw.com/api/section-header?merchant_id=${globalValue}`,
+        `https://shehab.farmin.online/api/section-header?merchant_id=${globalValue}`,
         {
           revalidate: 0,
         }
@@ -34,7 +34,7 @@ export default function Sidebar(props) {
     };
 
     fetchData();
-  }, []);
+  }, [globalValue]);
 
   let sections = data?.data.map((item, index) => {
     return (

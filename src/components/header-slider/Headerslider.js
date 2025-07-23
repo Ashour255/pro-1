@@ -18,7 +18,7 @@ export default function Headerslider() {
   useEffect(() => {
     const fetchData = async () => {
       const res = await fetch(
-        `https://altamyouzkw.com/api/main_background?merchant_id=${globalValue}`,
+        `https://shehab.farmin.online/api/main_background?merchant_id=${globalValue}`,
         {
           revalidate: 0,
         }
@@ -28,7 +28,7 @@ export default function Headerslider() {
     };
 
     fetchData();
-  }, []);
+  }, [globalValue]);
   let headersliderImg = data?.data.map((item, index) => {
     return (
       <SwiperSlide key={item.slug || index}>
@@ -53,6 +53,8 @@ export default function Headerslider() {
   return (
     <div style={{ overflow: "hidden" }}>
       <Swiper
+        data-aos="fade-up"
+        data-aos-delay="50"
         modules={[Autoplay, Pagination]}
         spaceBetween={0}
         slidesPerView={1}

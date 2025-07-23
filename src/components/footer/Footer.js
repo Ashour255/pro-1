@@ -1,10 +1,25 @@
+"use client";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import "./footer.css";
 
+// ✅ استيراد AOS
+import AOS from "aos";
+import "aos/dist/aos.css";
+
 export default function Footer() {
+  // ✅ تهيئة AOS أول ما الكومبوننت يظهر
+  useEffect(() => {
+    AOS.init({ duration: 800, once: true });
+  }, []);
+
   return (
-    <div className="footer">
+    <div
+      data-aos="fade-up"
+      data-aos-offset="0"
+      data-aos-delay="100"
+      className="footer"
+    >
       <div className="footer-links">
         <div>
           <Link href="/privacy-policy">Privacy policy</Link>
@@ -28,7 +43,6 @@ export default function Footer() {
             <span>Email: </span> info@easy-orders.com
           </Link>
         </div>
-        {/* <br /> */}
         <div className="footer-content-2">
           <Link href={"/"}>
             <span>Address:</span> SOdic\ZAyed

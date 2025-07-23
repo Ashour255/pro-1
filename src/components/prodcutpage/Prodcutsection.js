@@ -1,55 +1,3 @@
-// import "./prodcutpage.css";
-// import Link from "next/link";
-// import Image from "next/image";
-
-// export default function Prodcutsection({ products, id }) {
-//   return (
-//     <div className="product-bags">
-//       <div className="container">
-//         <div className="title">
-//           <h2>Product section</h2>
-//         </div>
-
-//         <div className="row">
-//           {Array.isArray(products) && products.length > 0 ? (
-//             products.map((product, index) => (
-//               <div
-//                 key={product.slug || index}
-//                 className="col-lg-3 col-md-4 col-6 prodcut-itme"
-//                 title={product.name}
-//               >
-//                 <Link href={`/prodcut/${product.slug}`}>
-//                   <div className="best-seller-item">
-//                     <Image
-//                       className="best-seller-image"
-//                       alt={product.name}
-//                       src={product.cover_Product}
-//                       width={300}
-//                       height={300}
-//                       quality={100}
-//                     />
-//                     <h6>{product.name}</h6>
-//                     <div className="price">
-//                       <p className="best-seller-price">{product.price} SAR</p>
-//                       {product.price_before && (
-//                         <p className="best-seller-old-price">
-//                           <del>{product.price_before} SAR</del>
-//                         </p>
-//                       )}
-//                     </div>
-//                   </div>
-//                 </Link>
-//               </div>
-//             ))
-//           ) : (
-//             <p>لا توجد منتجات متاحة</p>
-//           )}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
 "use client";
 import React, { useEffect, useState } from "react";
 import "./prodcutpage.css";
@@ -60,7 +8,6 @@ import Loading from "@/app/loading";
 import ListOfProdcut from "./ListOfProdcut";
 
 export default function Prodcutsection({ id }) {
-  console.log("القيمة id:", id);
   const globalValue = useSelector((state) => state.global.globalValue);
 
   const [products, setProducts] = useState([]);
@@ -74,10 +21,8 @@ export default function Prodcutsection({ id }) {
     let sorted = [...originalProducts];
     if (sorted.length === 0) {
       setProducts([]);
-      console.log("لا توجد بيانات للترتيب, originalProducts:", originalProducts);
       return;
     }
-    console.log("بدء الترتيب, البيانات الأصلية:", sorted, "الخيار:", option);
     try {
       switch (option) {
         case "Highest Price":
@@ -85,7 +30,6 @@ export default function Prodcutsection({ id }) {
             const priceA = parseFloat(a.price) || 0;
             const priceB = parseFloat(b.price) || 0;
             if (isNaN(priceA) || isNaN(priceB)) {
-              console.log("قيمة price غير صالحة:", { a, b });
               return 0;
             }
             return priceB - priceA;
@@ -96,7 +40,6 @@ export default function Prodcutsection({ id }) {
             const priceA = parseFloat(a.price) || 0;
             const priceB = parseFloat(b.price) || 0;
             if (isNaN(priceA) || isNaN(priceB)) {
-              console.log("قيمة price غير صالحة:", { a, b });
               return 0;
             }
             return priceA - priceB;
@@ -107,7 +50,6 @@ export default function Prodcutsection({ id }) {
             const dateA = new Date(a.created_at);
             const dateB = new Date(b.created_at);
             if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) {
-              console.log("تاريخ created_at غير صالح:", { a, b });
               return 0;
             }
             return dateB - dateA;
@@ -118,21 +60,16 @@ export default function Prodcutsection({ id }) {
             const dateA = new Date(a.created_at);
             const dateB = new Date(b.created_at);
             if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) {
-              console.log("تاريخ created_at غير صالح:", { a, b });
               return 0;
             }
             return dateA - dateB;
           });
           break;
         default:
-          console.log("خيار ترتيب غير معروف:", option);
           break;
       }
       setProducts(sorted);
-      console.log("تم الترتيب حسب:", option, "النتيجة:", sorted);
-    } catch (error) {
-      console.error("خطأ أثناء الترتيب:", error);
-    }
+    } catch (error) {}
   };
 
   // جلب البيانات
@@ -141,23 +78,20 @@ export default function Prodcutsection({ id }) {
       setIsLoading(true);
       setError(null); // مسح أي أخطاء سابقة
       const res = await fetch(
-        `https://altamyouzkw.com/api/products-section/${id}?merchant_id=${globalValue}`
+        `https://shehab.farmin.online/api/products-section/${id}?merchant_id=${globalValue}`
       );
       if (!res.ok) {
         throw new Error(`فشل الطلب: ${res.status} - ${res.statusText}`);
       }
       const result = await res.json();
-      console.log("استجابة الـ API:", result);
 
       let records = result?.data?.records || result?.data || [];
       if (!Array.isArray(records)) {
-        console.log("records ليس مصفوفة، تم تعيين مصفوفة فارغة، الاستجابة:", result);
         records = [];
       }
       setOriginalProducts(records);
       setProducts(records); // عرض البيانات الأصلية فورًا دون ترتيب
     } catch (error) {
-      console.error("حدث خطأ أثناء جلب المنتجات:", error);
       setError(error.message);
     } finally {
       setIsLoading(false);
@@ -168,7 +102,6 @@ export default function Prodcutsection({ id }) {
     if (globalValue && id) {
       fetchData();
     } else {
-      console.log("globalValue أو id غير موجود:", { globalValue, id });
       setError("globalValue أو id غير موجود");
     }
   }, [globalValue, id]);
@@ -177,7 +110,6 @@ export default function Prodcutsection({ id }) {
     sortProducts(sortOption); // ترتيب عند تغيير sortOption
   }, [sortOption]);
 
-  // console.log(products[0]?category_name);
   return (
     <div className="product-bags">
       {isLoading ? (
@@ -190,7 +122,6 @@ export default function Prodcutsection({ id }) {
             <h2>{products[0]?.category_name}</h2>
             <ListOfProdcut
               onChange={(option) => {
-                console.log("تم اختيار خيار ترتيب:", option);
                 setSortOption(option);
               }}
             />
@@ -200,6 +131,8 @@ export default function Prodcutsection({ id }) {
             {Array.isArray(products) && products.length > 0 ? (
               products.map((product, index) => (
                 <div
+                  data-aos="fade-up"
+                  data-aos-delay={index * 75}
                   key={product.slug || index}
                   className="col-lg-3 col-md-4 col-6 prodcut-itme"
                   title={product.name}

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import "./prodcutpage.css";
 import Link from "next/link";
 import Image from "next/image";
@@ -17,67 +17,85 @@ export default function Prodcuts() {
   const [sortOption, setSortOption] = useState("Highest Rate");
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchData = async (page = 1) => {
-    try {
-      setIsLoading(true);
-      const res = await fetch(
-        `https://altamyouzkw.com/api/products?merchant_id=${globalValue}&page=${page}`
-      );
-      const result = await res.json();
-
-      let records = result?.data?.records || [];
-      const pagination = result?.data?.["pagination links"];
-
-      setProducts(records);
-      setOriginalProducts(records); // نخزن النسخة الأصلية للترتيب المحلي
-
-      setCurrentPage(pagination?.["current page"] || 1);
-      const total = pagination?.total || records.length;
-      const perPage = pagination?.["per page"] || 10;
-      setTotalPages(Math.ceil(total / perPage));
-    } catch (error) {
-      console.error("حدث خطأ أثناء جلب المنتجات:", error);
-    } finally {
-      setIsLoading(false);
-    }
+  // Scroll to top function
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const sortProducts = (option) => {
-    let sorted = [...originalProducts];
-    switch (option) {
-      case "Highest Price":
-        sorted.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
-        break;
-      case "Lowest Price":
-        sorted.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-        break;
-      case "Newest":
-        sorted.sort(
-          (a, b) => new Date(b.created_at) - new Date(a.created_at)
+  const fetchData = useCallback(
+    async (page = 1) => {
+      try {
+        setIsLoading(true);
+        const res = await fetch(
+          `https://shehab.farmin.online/api/products?merchant_id=${globalValue}&page=${page}`
         );
-        break;
-      case "Oldest":
-        sorted.sort(
-          (a, b) => new Date(a.created_at) - new Date(b.created_at)
-        );
-        break;
-      default:
-        break;
-    }
-    setProducts(sorted);
-  };
+        const result = await res.json();
+
+        let records = result?.data?.records || [];
+        const pagination = result?.data?.["pagination links"];
+
+        setProducts(records);
+        setOriginalProducts(records);
+        setCurrentPage(pagination?.["current page"] || 1);
+        const total = pagination?.total || records.length;
+        const perPage = pagination?.["per page"] || 10;
+        setTotalPages(Math.ceil(total / perPage));
+      } catch (error) {
+        // console.error("fetch error", error);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [globalValue]
+  );
+
+  const sortProducts = useCallback(
+    (option) => {
+      let sorted = [...originalProducts];
+      switch (option) {
+        case "Highest Price":
+          sorted.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+          break;
+        case "Lowest Price":
+          sorted.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+          break;
+        case "Newest":
+          sorted.sort(
+            (a, b) => new Date(b.created_at) - new Date(a.created_at)
+          );
+          break;
+        case "Oldest":
+          sorted.sort(
+            (a, b) => new Date(a.created_at) - new Date(b.created_at)
+          );
+          break;
+        case "Highest Rate":
+          break;
+        default:
+          break;
+      }
+      setProducts(sorted);
+    },
+    [originalProducts]
+  );
 
   useEffect(() => {
     if (globalValue) {
       fetchData(currentPage);
     }
-  }, [globalValue, currentPage]);
+  }, [globalValue, currentPage, fetchData]);
 
   useEffect(() => {
     sortProducts(sortOption);
-  }, [sortOption, originalProducts]);
+  }, [sortOption, sortProducts]);
 
-  console.log("Products:", products);
+  // ✅ لما يضغط أي زر صفحة، نغير الصفحة ونطلع لفوق
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    fetchData(newPage);
+    scrollToTop();
+  };
+
   return (
     <div className="product-bags">
       {isLoading ? (
@@ -92,11 +110,13 @@ export default function Prodcuts() {
           <div className="row">
             {products.map((product, index) => (
               <div
+                data-aos="fade-up"
+                data-aos-delay={index * 75}
                 key={index}
                 className="col-lg-3 col-md-4 col-6 prodcut-itme"
                 title={product.name}
               >
-                <Link href={`prodcut/${product.slug}`}>
+                <Link href={`/prodcut/${product.slug}`}>
                   <div className="best-seller-item">
                     <Image
                       className="best-seller-image"
@@ -121,25 +141,26 @@ export default function Prodcuts() {
             ))}
           </div>
 
-          {/* Pagination */}
+          {/* ✅ Pagination */}
           {totalPages > 1 && (
             <div className="pagination mt-4 text-center">
+              {/* السابق */}
               <button
                 className="pagination-button"
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
                 disabled={currentPage === 1}
               >
                 prev
               </button>
 
+              {/* أرقام الصفحات */}
               {Array.from({ length: totalPages }, (_, i) => i + 1)
-                .filter((page) => {
-                  return (
+                .filter(
+                  (page) =>
                     page === 1 ||
                     page === totalPages ||
                     Math.abs(currentPage - page) <= 1
-                  );
-                })
+                )
                 .map((page, i, arr) => {
                   const prevPage = arr[i - 1];
                   const showDots = prevPage && page - prevPage > 1;
@@ -153,7 +174,7 @@ export default function Prodcuts() {
                         className={`pagination-button ${
                           currentPage === page ? "active" : ""
                         }`}
-                        onClick={() => setCurrentPage(page)}
+                        onClick={() => handlePageChange(page)}
                       >
                         {page}
                       </button>
@@ -161,10 +182,11 @@ export default function Prodcuts() {
                   );
                 })}
 
+              {/* التالي */}
               <button
                 className="pagination-button"
                 onClick={() =>
-                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                  handlePageChange(Math.min(currentPage + 1, totalPages))
                 }
                 disabled={currentPage === totalPages}
               >

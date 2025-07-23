@@ -5,7 +5,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'altamyouzkw.com',
+        hostname: 'shehab.farmin.online',
         pathname: '/images/**',
       },
     ],

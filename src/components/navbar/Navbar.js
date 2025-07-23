@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
 import "./navbar.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Sidebar from "../siedbar/Sidebar";
 import Sidecart from "@/components/sideCart/Sidecart";
 import { useSelector, useDispatch } from "react-redux";
@@ -19,15 +19,16 @@ export default function Navbar() {
   const dispatch = useDispatch();
   const [show, setShow] = useState("");
   const cartOpen = useSelector((state) => state.cart.isCartOpen);
-  const cartItems = useSelector((state) => state.cart.items) || [];
-  const [cartCount, setCartCount] = useState(0); // حالة محلية لـ cartCount
+  // عرف cartItems باستخدام useSelector برا useMemo
+  const rawCartItems = useSelector((state) => state.cart.items);
+  // ثبت cartItems باستخدام useMemo
+  const cartItems = useMemo(() => rawCartItems || [], [rawCartItems]);
+  const [cartCount, setCartCount] = useState(0);
   const globalValue = useSelector((state) => state.global.globalValue);
   const [data, setData] = useState(null);
 
-  // تحديث cartCount بعد الـ Hydration على العميل
-  useEffect(() => {
-    setCartCount(cartItems.length); // تحديث cartCount بناءً على cartItems
-  }, [cartItems]);
+  // استخدم cartItems المثبت في useMemo لحساب cartCountValue
+  const cartCountValue = useMemo(() => cartItems.length, [cartItems]);
 
   const handleOpenCart = () => {
     dispatch(setCartOpen(true));
@@ -46,7 +47,7 @@ export default function Navbar() {
   useEffect(() => {
     const fetchData = async () => {
       const res = await fetch(
-        `https://altamyouzkw.com/api/section-header?merchant_id=${globalValue}`,
+        `https://shehab.farmin.online/api/section-header?merchant_id=${globalValue}`,
         {
           cache: "no-store",
         }
@@ -55,7 +56,8 @@ export default function Navbar() {
       setData(result);
     };
     fetchData();
-  }, [globalValue]);
+    setCartCount(cartCountValue);
+  }, [globalValue, cartCountValue]);
 
   let sections = data?.data.map((item, index) => {
     return (

@@ -1,10 +1,12 @@
 // "use client";
 // import { useState, useEffect } from "react";
+// import Aos from "@/components/Aos";
 import Bestseller from "@/components/bestseller/Bestseller";
 import Categories from "@/components/categories/Categories";
 import Default_product from "@/components/default_product/Default_product";
 import Headerslider from "@/components/header-slider/Headerslider";
 import Imghome from "@/components/imghome/Imghome";
+import Pixel_home from "@/components/pixel/Pixel_home";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function Home() {
@@ -27,12 +29,14 @@ export default function Home() {
   // async
   // await new Promise((resolve) => setTimeout(resolve, 100000)); // Simulate a delay of 2 seconds
   return (
-    <div style={{ overflowX: "hidden" }}>
+    <div>
       <Headerslider />
       <Categories />
       <Bestseller />
       <Imghome />
       <Default_product />
+      <Pixel_home />
+      {/* <Aos /> */}
     </div>
   );
 }

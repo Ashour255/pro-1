@@ -25,8 +25,10 @@ const getInitialCart = () => {
     if (stored) {
       const parsed = JSON.parse(stored);
       if (Array.isArray(parsed)) {
-        const filteredItems = parsed.filter((item) => item?.slug && item?.qty > 0);
-        console.log("تم قراءة السلة من localStorage:", filteredItems);
+        const filteredItems = parsed.filter(
+          (item) => item?.slug && item?.qty > 0
+        );
+        // console.log("تم قراءة السلة من localStorage:", filteredItems);
         return filteredItems;
       }
     }
@@ -46,23 +48,43 @@ export const cartSlice = createSlice({
   name: "cartSlice",
   initialState,
   reducers: {
-    addToCart: (state, action) => {
-      // console.log("جارٍ إضافة منتج:", action.payload);
-      const existing = state.items.find((item) => item.slug === action.payload.slug);
-      if (existing) {
-        existing.qty += 1; // زيادة الكمية بـ 1 لو المنتج موجود
-      } else {
-        state.items.push({ ...action.payload, qty: 1 }); // إضافة منتج جديد بـ qty: 1
+ addToCart: (state, action) => {
+  const existing = state.items.find(
+    (item) =>
+      item.slug === action.payload.slug &&
+      item.price === action.payload.price &&
+      item.price_before === action.payload.price_before &&
+      item.selectedColor === action.payload.selectedColor &&
+      item.selectedSize === action.payload.selectedSize
+  );
+
+  if (existing) {
+    if (existing.qty < existing.product_quantity) {
+      existing.qty += 1; // الزيادة فقط لو أقل من العدد المتاح
+    }
+  } else {
+    state.items.push({ ...action.payload, qty: 1 }); // منتج جديد بتفاصيله
+  }
+
+  updateLocalStorage(state.items);
+},
+
+    deleteFromCart: (state, action) => {
+      // Find the index of the item to delete based on all its unique properties
+      const indexToDelete = state.items.findIndex(
+        (item) =>
+          item.slug === action.payload.slug &&
+          item.selectedColor === action.payload.selectedColor &&
+          item.selectedSize === action.payload.selectedSize
+      );
+
+      if (indexToDelete !== -1) {
+        state.items.splice(indexToDelete, 1);
       }
       updateLocalStorage(state.items);
     },
-    deleteFromCart: (state, action) => {
-      // console.log("جارٍ حذف منتج بـ slug:", action.payload.slug);
-      state.items = state.items.filter((item) => item.slug !== action.payload.slug);
-      updateLocalStorage(state.items);
-    },
     clearCart: (state) => {
-      console.log("جارٍ إفراغ السلة");
+      // console.log("جارٍ إفراغ السلة");
       state.items = [];
       updateLocalStorage([]);
     },
@@ -72,21 +94,37 @@ export const cartSlice = createSlice({
       updateLocalStorage(state.items);
     },
     increaseQuantity: (state, action) => {
-      // console.log("جارٍ زيادة الكمية لـ slug:", action.payload.slug);
-      const item = state.items.find((item) => item.slug === action.payload.slug);
+      const item = state.items.find(
+        (item) =>
+          item.slug === action.payload.slug &&
+          item.selectedColor === action.payload.selectedColor &&
+          item.selectedSize === action.payload.selectedSize
+      );
       if (item && item.qty < 99) {
         item.qty += 1;
       }
       updateLocalStorage(state.items);
     },
     decreaseQuantity: (state, action) => {
-      // console.log("جارٍ تقليل الكمية لـ slug:", action.payload.slug);
-      const item = state.items.find((item) => item.slug === action.payload.slug);
+      const item = state.items.find(
+        (item) =>
+          item.slug === action.payload.slug &&
+          item.selectedColor === action.payload.selectedColor &&
+          item.selectedSize === action.payload.selectedSize
+      );
       if (item) {
         if (item.qty > 1) {
           item.qty -= 1;
         } else {
-          state.items = state.items.filter((pro) => pro.slug !== action.payload.slug);
+          // If quantity becomes 0 or less, remove the item
+          state.items = state.items.filter(
+            (pro) =>
+              !(
+                pro.slug === action.payload.slug &&
+                pro.selectedColor === action.payload.selectedColor &&
+                pro.selectedSize === action.payload.selectedSize
+              )
+          );
         }
       }
       updateLocalStorage(state.items);

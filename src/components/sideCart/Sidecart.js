@@ -29,16 +29,39 @@ const Cart = ({ onClose, open }) => {
   ).toFixed(2);
 
   const handleIncrease = (item) => {
-    dispatch(increaseQuantity({ slug: item.slug }));
+    if (item.qty >= item.product_quantity) {
+      alert("الكمية المطلوبة غير متوفرة حالياً");
+      return;
+    }
+    dispatch(
+      increaseQuantity({
+        slug: item.slug,
+        selectedColor: item.selectedColor,
+        selectedSize: item.selectedSize,
+      })
+    );
   };
 
   const handleDecrease = (item) => {
-    dispatch(decreaseQuantity({ slug: item.slug }));
+    dispatch(
+      decreaseQuantity({
+        slug: item.slug,
+        selectedColor: item.selectedColor,
+        selectedSize: item.selectedSize,
+      })
+    );
   };
 
   const handleDelete = (item) => {
-    dispatch(deleteFromCart({ slug: item.slug }));
+    dispatch(
+      deleteFromCart({
+        slug: item.slug,
+        selectedColor: item.selectedColor,
+        selectedSize: item.selectedSize,
+      })
+    );
   };
+
   return (
     <div className="cart-dialog" role="dialog" aria-modal="true">
       <div className="cart-overlay" onClick={onClose} aria-hidden="true"></div>
@@ -61,8 +84,11 @@ const Cart = ({ onClose, open }) => {
               )}
               <ul className="cart-items-list">
                 {cartItems.length > 0 ? (
-                  cartItems.map((item) => (
-                    <li key={item.slug} className="cart-item">
+                  cartItems.map((item, index) => (
+                    <li
+                      key={`${item.slug}-${item.selectedColor}-${item.selectedSize}-${index}`}
+                      className="cart-item"
+                    >
                       <div className="cart-item-image-container">
                         <Image
                           width={100}
@@ -78,6 +104,25 @@ const Cart = ({ onClose, open }) => {
                           <h3>{item.name}</h3>
                           <p className="cart-item-price">{item.price} SAR</p>
                         </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: "10px",
+                            alignItems: "center",
+                            marginTop: "10px",
+                            marginBottom: "10px",
+                          }}
+                        >
+                          <div>{item.selectedSize}</div>
+                          {item.selectedColor && (
+                            <div
+                              className="colorCircleCart"
+                              style={{
+                                backgroundColor: item.selectedColor || null,
+                              }}
+                            ></div>
+                          )}
+                        </div>
                         <div className="cart-item-meta">
                           <p className="cart-item-total">
                             Total {parseFloat(item.price) * item.qty} SAR
@@ -86,10 +131,11 @@ const Cart = ({ onClose, open }) => {
                             <button
                               className="cart-quantity-button"
                               onClick={() => handleIncrease(item)}
+                              disabled={item.qty >= item.product_quantity}
                             >
                               <FontAwesomeIcon icon={faPlus} />
                             </button>
-                            <p className="cart-quantity-value">{item.qty}</p>
+                            <p className="cart-quantity-value">{item.qty }</p>
                             <button
                               className="cart-quantity-button"
                               onClick={() => handleDecrease(item)}
@@ -102,6 +148,20 @@ const Cart = ({ onClose, open }) => {
                             >
                               <FontAwesomeIcon icon={faTrashCan} />
                             </button>
+                            {item.qty == item.product_quantity && (
+                              <p
+                                style={{
+                                  color: "green",
+                                  fontSize: "14px",
+                                  marginTop: "5px",
+                                  marginBottom: "0",
+                                  marginLeft: "14px",
+                                }}
+                                className="quantityWarning"
+                              >
+                                {item.product_quantity} items available
+                              </p>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -135,9 +195,7 @@ const Cart = ({ onClose, open }) => {
               <div className="cart-summary">
                 <dl className="cart-summary-list">
                   <div className="cart-summary-item">
-                    <dt className="cart-summary-label">
-                      Product Totalannot be empty
-                    </dt>
+                    <dt className="cart-summary-label">Product Total</dt>
                     <dd className="cart-summary-value">
                       {parseFloat(productTotal).toFixed(0)} SAR
                     </dd>

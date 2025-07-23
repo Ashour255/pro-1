@@ -30,7 +30,7 @@ export default function ListOfProdcut({ onChange }) {
         }
       }
     }
-  }, []);
+  }, [onChange , options]);
 
   const handleOptionClick = (option) => {
     setSelectedOption(option);
